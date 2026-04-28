@@ -19,22 +19,21 @@ class MergeSortRecursive:
         right_arr = arr[mid+1:right+1]
         left_ptr = 0
         right_ptr = 0
+        k = left
 
-        for ind in range(left, right+1):
-            if left_ptr == len(left_arr) or right_ptr == len(right_arr):
-                if right_ptr == len(right_arr):
-                    arr[ind] = left_arr[left_ptr]
-                    left_ptr += 1
-                else:
-                    arr[ind] = right_arr[right_ptr]
-                    right_ptr += 1
+        while left_ptr < len(left_arr) and right_ptr < len(right_arr):
+            if left_arr[left_ptr] <= right_arr[right_ptr]:
+                arr[k] = left_arr[left_ptr]
+                left_ptr += 1
             else:
-                if left_arr[left_ptr] <= right_arr[right_ptr]:
-                    arr[ind] = left_arr[left_ptr]
-                    left_ptr += 1
-                else:
-                    arr[ind] = right_arr[right_ptr]
-                    right_ptr += 1
+                arr[k] = right_arr[right_ptr]
+                right_ptr += 1
+            k += 1
+
+        # copy remaining elements
+        arr[k:k + len(left_arr) - left_ptr] = left_arr[left_ptr:]
+        k += len(left_arr) - left_ptr
+        arr[k:right + 1] = right_arr[right_ptr:]
 
     @classmethod
     def merge_sort(cls, arr: list, left: int, right: int) -> None:
@@ -110,22 +109,26 @@ class MergeSortIterative:
 class MergeSortIterativeWithStack:
     """merge sort with two stack"""
 
-    @staticmethod  
+    @staticmethod
     def _merge(arr: list, left: int, mid: int, right: int) -> None:
         left_que = deque(arr[left:mid+1])
         right_que = deque(arr[mid+1:right+1])
+        k = left
 
-        for ind in range(left, right+1):
-            if not left_que or not right_que:
-                if not left_que:
-                    arr[ind] = right_que.popleft()
-                else:
-                    arr[ind] = left_que.popleft()
+        while left_que and right_que:
+            if left_que[0] <= right_que[0]:
+                arr[k] = left_que.popleft()
             else:
-                if left_que[0] <= right_que[0]:
-                    arr[ind] = left_que.popleft()
-                else:
-                    arr[ind] = right_que.popleft()
+                arr[k] = right_que.popleft()
+            k += 1
+
+        # copy remaining elements
+        while left_que:
+            arr[k] = left_que.popleft()
+            k += 1
+        while right_que:
+            arr[k] = right_que.popleft()
+            k += 1
 
         
     
